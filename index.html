@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papier, Kamień, Nożyce</title>
+    <style>
+        h1 {
+            color: #7db9ce;
+        }
+        body {
+            font-family: Sirenia, cursive;
+            background: radial-gradient(circle, #873927, blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .game-container {
+            background: radial-gradient(circle, red, blue);
+            padding: 20px;
+            border-radius: 120px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border:2px solid rgb(63, 255, 57);
+            margin-top:20px;
+
+
+            
+    border-top-color: rgb(4, 255, 255);   
+    border-right-color: rgb(63, 177, 120); 
+    border-bottom-color: rgb(29, 141, 94); 
+    border-left-color: rgb(123, 195, 123);  
+
+        }
+        .choice {
+            margin-top: 50px;
+            margin-block: 20px;
+            margin-left: 20px;
+            font-size: 145px;
+            background: radial-gradient(circle, red, blue); 
+        }
+        .scoreboard{
+            font-weight: 700;
+            color:#fff;
+        }
+       
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>Zmierz się z komputerem w grze:<br>
+            Papier, Kamień, Nożyce</h1>
+        <div class="choices">
+            <button class="choice" id="rock">🗿</button>
+            <button class="choice" id="paper">🧻</button>
+            <button class="choice" id="scissors">✂️</button>
+        </div>
+        <div class="scoreboard">
+            <p>Wygrane: <span id="wins">0</span></p>
+            <p>Przegrane: <span id="losses">0</span></p>
+            <p>Remisy: <span id="ties">0</span></p>
+        </div>
+    </div>
+    <script>
+        const choices = document.querySelectorAll('.choice');
+        const winsSpan = document.getElementById('wins');
+        const lossesSpan = document.getElementById('losses');
+        const tiesSpan = document.getElementById('ties');
+
+        let wins = 0;
+        let losses = 0;
+        let ties = 0;
+
+        choices.forEach(choice => choice.addEventListener('click', playGame));
+
+        function playGame(event) {
+            const userChoice = event.target.id;
+            const computerChoice = getComputerChoice();
+            const result = getResult(userChoice, computerChoice);
+            updateScore(result);
+            displayResult(userChoice, computerChoice, result);
+            checkForReset();
+        }
+
+        function getComputerChoice() {
+            const choices = ['rock', 'paper', 'scissors'];
+            const randomIndex = Math.floor(Math.random() * choices.length);
+            return choices[randomIndex];
+        }
+
+        function getResult(userChoice, computerChoice) {
+            if (userChoice === computerChoice) {
+                return 'tie';
+            } else if (
+                (userChoice === 'rock' && computerChoice === 'scissors') ||
+                (userChoice === 'paper' && computerChoice === 'rock') ||
+                (userChoice === 'scissors' && computerChoice === 'paper')
+            ) {
+                return 'win';
+            } else {
+                return 'lose';
+            }
+        }
+
+        function updateScore(result) {
+            if (result === 'win') {
+                wins++;
+                winsSpan.textContent = wins;
+            } else if (result === 'lose') {
+                losses++;
+                lossesSpan.textContent = losses;
+            } else {
+                ties++;
+                tiesSpan.textContent = ties;
+            }
+        }
+
+        function displayResult(userChoice, computerChoice, result) {
+            let resultText = `Ty wybrałeś: ${getChoiceName(userChoice)}, Komputer wybrał: ${getChoiceName(computerChoice)}. `;
+            if (result === 'win') {
+                resultText += 'Ty wygrywasz!';
+            } else if (result === 'lose') {
+                resultText += 'Ty przegrywasz!';
+            } else {
+                resultText += 'To jest remis!';
+            }
+            alert(resultText);
+        }
+
+        function getChoiceName(choice) {
+            if (choice === 'rock') return 'Kamień';
+            if (choice === 'paper') return 'Papier';
+            if (choice === 'scissors') return 'Nożyce';
+        }
+
+        function checkForReset() {
+            if (wins >= 5 || losses >= 5) {
+                const playAgain = confirm('Osiągnąłeś 5 wygranych lub komputer wygrał 5 razy! Czy chcesz zagrać jeszcze raz?');
+                if (playAgain) {
+                    resetGame();
+                } else {
+                    // Reset the scores and disable the buttons if the player does not want to play again
+                    resetGame();
+                    choices.forEach(choice => choice.disabled = true);
+                }
+            }
+        }
+
+        function resetGame() {
+            wins = 0;
+            losses = 0;
+            ties = 0;
+            winsSpan.textContent = wins;
+            lossesSpan.textContent = losses;
+            tiesSpan.textContent = ties;
+        }
+    </script>
+</body>
+</html>
